@@ -1,0 +1,1 @@
+PASS: browser CRUD, shared-song appearances, duplicate feedback, keyboard and drag reorder, unsaved guard, stale conflict, persistence, removal and refresh recovery, empty state, mobile layouts, Admin assets, no page errors

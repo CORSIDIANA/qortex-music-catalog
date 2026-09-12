@@ -3,6 +3,26 @@
 Executed on 2026-09-12, Windows host with Docker Desktop Linux containers.
 These are local execution results, not a claim of external human review or public production readiness.
 
+Implementation commit: `0e604d434690a159fc0ce8370b881d8ffaac733c`.
+The subsequent evidence commit changes documentation and receipts only.
+
+## Fresh-clone acceptance
+
+A separate Git clone was built with `docker compose build --no-cache` (exit 0), then started under
+its own Compose project with a newly created PostgreSQL volume. Only `.env.example` was copied;
+the frontend port was changed to 5174 to coexist with the original instance. No virtual environment,
+`node_modules`, database contents or local application files were copied into the clone.
+
+`python scripts/verify.py http://127.0.0.1:5174` completed all eight checks with exit 0.
+`python scripts/browser_smoke.py http://127.0.0.1:5174` also exited 0 against the new database.
+The no-cache image build repeated 17 frontend tests, lint, typecheck and bundling; the fresh database
+run repeated all 87 backend tests. This closes the mandatory local submission gates.
+
+Receipts: [cold-start commands and exits](evidence/cold-start.json),
+[backend test output](evidence/backend-tests.txt), [frontend build output](evidence/frontend-build.txt),
+[browser result](evidence/browser-smoke.txt). The [shared-song screenshot](images/song-appearances.png)
+shows the seeded appearance at positions 2 and 7; automated tests establish the underlying identity.
+
 ## Executed checks
 
 | Command | Exit | Observed result |
@@ -21,6 +41,7 @@ These are local execution results, not a claim of external human review or publi
 | `npm run build` in frontend | 0 | Vue typecheck and Vite production bundle |
 | `npm run format:check` in frontend | 0 | Prettier clean |
 | `npm audit --omit=dev` in frontend | 0 | No reported runtime dependency vulnerabilities at execution time |
+| `python scripts/verify.py http://127.0.0.1:5174` | 0 | All eight checks passed in the fresh clone |
 | `python scripts/browser_smoke.py` | 0 | Critical browser flows, desktop/mobile layout, Admin assets; no page errors |
 
 The Docker frontend build repeats lint, unit tests and the production build with pinned Node 22.23.2.
@@ -65,8 +86,16 @@ and individual logs. CI uploads its execution logs and browser screenshots as ar
 | Dependency pins / lint / format / typecheck | PASS | Locks, Ruff, ESLint, Prettier, vue-tsc |
 | Responsive / labelled / loading / empty / recovery UI | PASS | Browser layout checks and focused component regressions |
 | SPEC / decisions / README / reproducible evidence | PASS | Repository documents and verification scripts |
-| Independent review of final staged subject | PENDING | Required before implementation commit |
-| Fresh-clone startup with a new database volume | PENDING | Required after implementation commit |
+| Independent review of implementation staged subject | PASS | Non-author reviewer ACCEPT; independently reran 85 model/API/concurrency tests |
+| Fresh-clone startup with a new database volume | PASS | No-cache build, all eight verification checks and real browser smoke |
+
+## Review record
+
+The implementation received an accountable architect decision and a separate non-author adversarial
+AI-agent review on staged patch `98868a7028d9a9b1035ee88d2ad82d7199ce65fa` before commit.
+The reviewer independently checked the domain, concurrent writes, API edges, UI recovery, Docker setup,
+source boundaries and observed evidence, and ran 85 model/API/concurrency tests (exit 0).
+All confirmed findings were addressed before acceptance. The review is not a human third-party audit.
 
 ## Boundaries
 

@@ -1,0 +1,48 @@
+Frontend build-step excerpt from docker compose build --no-cache (trailing whitespace trimmed).
+#25 [frontend build 6/6] RUN npm run lint && npm run test && npm run build
+#25 0.535
+#25 0.535 > music-catalog-frontend@1.0.0 lint
+#25 0.535 > eslint . --max-warnings 0
+#25 0.535
+#25 3.763
+#25 3.763 > music-catalog-frontend@1.0.0 test
+#25 3.763 > vitest run
+#25 3.763
+#25 4.343
+#25 4.343 [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/app[39m
+#25 4.343
+#25 4.673  [32m✓[39m src/trackOrder.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+#25 4.715  [32m✓[39m src/api.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 55[2mms[22m[39m
+#25 6.367  [32m✓[39m src/components/AddSongPanel.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 77[2mms[22m[39m
+#25 6.588  [32m✓[39m src/components/TracklistEditor.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 215[2mms[22m[39m
+#25 6.637  [32m✓[39m src/pages/DetailEditing.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 181[2mms[22m[39m
+#25 6.643
+#25 6.644 [2m Test Files [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+#25 6.644 [2m      Tests [22m [1m[32m17 passed[39m[22m[90m (17)[39m
+#25 6.644 [2m   Start at [22m 08:55:58
+#25 6.644 [2m   Duration [22m 2.29s[2m (transform 2.07s, setup 0ms, import 2.62s, tests 538ms, environment 3.03s)[22m
+#25 6.644
+#25 6.890
+#25 6.890 > music-catalog-frontend@1.0.0 build
+#25 6.890 > npm run typecheck && vite build
+#25 6.890
+#25 7.062
+#25 7.062 > music-catalog-frontend@1.0.0 typecheck
+#25 7.062 > vue-tsc --noEmit
+#25 7.062
+#25 ...
+#25 [frontend build 6/6] RUN npm run lint && npm run test && npm run build
+#25 ...
+#25 [frontend build 6/6] RUN npm run lint && npm run test && npm run build
+#25 ...
+#25 [frontend build 6/6] RUN npm run lint && npm run test && npm run build
+#25 11.65 vite v7.3.6 building client environment for production...
+#25 11.79 transforming...
+#25 13.03 ✓ 59 modules transformed.
+#25 13.17 rendering chunks...
+#25 13.18 computing gzip size...
+#25 13.19 dist/index.html                   0.64 kB │ gzip:  0.37 kB
+#25 13.19 dist/assets/index-CzYv1ikm.css   24.72 kB │ gzip:  6.35 kB
+#25 13.19 dist/assets/index-BMtYm6i8.js   133.08 kB │ gzip: 47.80 kB
+#25 13.19 ✓ built in 1.50s
+#25 DONE 13.4s
