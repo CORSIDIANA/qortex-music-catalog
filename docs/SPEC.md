@@ -45,6 +45,7 @@ Appears-on rows serialize as `{album, album_title, artist_name, track_number}`.
 Create returns 201, read/update 200, successful deletion 204, malformed input 400, missing resource 404,
 protected deletion / stale revision 409. Track mutation responses return the refreshed album detail (POST: 201).
 DELETE placement returns 204; frontend reloads album.
+Metadata edits target existing rows only: if an item is deleted during an update, return 404 without recreating it.
 Reorder requires each current placement exactly once. Foreign, missing or repeated IDs are rejected with no change.
 Every track mutation locks the parent album and increments its revision. A stale reorder gets 409.
 Reorder must be atomic under PostgreSQL constraints, including when swapping occupied numbers.
@@ -62,6 +63,7 @@ IDs, revisions and track numbers must be integers, never booleans or fractional 
 - Songs can be searched/created/edited/deleted; detail shows Appears on with album, artist and track number.
 - Forms have labels, visible focus, pending state and server-side validation feedback.
 - Navigating away from an unsaved order asks before discarding it.
+- Switching directly to another album applies the same unsaved-order guard.
 
 ## Acceptance
 

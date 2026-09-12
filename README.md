@@ -60,6 +60,10 @@ docker compose exec backend python manage.py createsuperuser
 
 Album placements are read-only in Admin so all track mutations preserve the revision contract.
 
+For a quick review, open **Songs → Satellite Hearts → Appears on**: the same song is track 2 on
+**Afterglow** and track 7 on **Collected Signals**. Open either album, move a track and save the order,
+then reload to see it persist. Use **Add song** to reuse a song or create one inline.
+
 ## Tests
 
 With the stack running:
@@ -118,3 +122,5 @@ See [SPEC](docs/SPEC.md) for the full behavior contract.
 
 Short rationales live in [DECISIONS](docs/DECISIONS.md); [verification evidence](docs/VERIFICATION.md)
 records the exercised checks and their limits.
+
+Author: **Sarayeu Aliaksei** · [rusenglishvideos@gmail.com](mailto:rusenglishvideos@gmail.com)

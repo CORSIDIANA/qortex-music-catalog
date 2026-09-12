@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Album, AlbumTrack, Artist, Song
+from .updates import update_existing
 
 
 class StrictIntegerField(serializers.IntegerField):
@@ -17,6 +18,12 @@ class StrictCharField(serializers.CharField):
         return super().to_internal_value(data)
 
 
+class ExistingRowSerializer(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        # Only changed metadata is written; a concurrent track edit keeps its revision.
+        return update_existing(instance, validated_data)
+
+
 class AlbumTrackSerializer(serializers.ModelSerializer):
     song_title = serializers.CharField(source="song.title", read_only=True)
 
@@ -25,7 +32,7 @@ class AlbumTrackSerializer(serializers.ModelSerializer):
         fields = ["id", "song", "song_title", "track_number"]
 
 
-class AlbumSerializer(serializers.ModelSerializer):
+class AlbumSerializer(ExistingRowSerializer):
     title = StrictCharField(max_length=200)
     artist = serializers.PrimaryKeyRelatedField(
         queryset=Artist.objects.all(), pk_field=StrictIntegerField(min_value=1)
@@ -39,14 +46,6 @@ class AlbumSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "artist", "artist_name", "release_year", "track_count", "revision"]
         read_only_fields = ["revision"]
 
-    def update(self, instance, validated_data):
-        for field, value in validated_data.items():
-            setattr(instance, field, value)
-        if validated_data:
-            # Metadata edits must not write an older revision over a concurrent track edit.
-            instance.save(update_fields=list(validated_data))
-        return instance
-
 
 class AlbumDetailSerializer(AlbumSerializer):
     tracks = AlbumTrackSerializer(many=True, read_only=True)
@@ -55,7 +54,7 @@ class AlbumDetailSerializer(AlbumSerializer):
         fields = [*AlbumSerializer.Meta.fields, "tracks"]
 
 
-class ArtistSerializer(serializers.ModelSerializer):
+class ArtistSerializer(ExistingRowSerializer):
     name = StrictCharField(max_length=200)
     album_count = serializers.IntegerField(read_only=True)
 
@@ -80,7 +79,7 @@ class AppearanceSerializer(serializers.ModelSerializer):
         fields = ["album", "album_title", "artist_name", "track_number"]
 
 
-class SongSerializer(serializers.ModelSerializer):
+class SongSerializer(ExistingRowSerializer):
     title = StrictCharField(max_length=200)
     album_count = serializers.IntegerField(read_only=True)
 

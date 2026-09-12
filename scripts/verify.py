@@ -75,7 +75,7 @@ def main():
             [
                 sys.executable,
                 "scripts/smoke.py",
-                sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5173",
+                sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:5173",
             ],
         ),
     ]

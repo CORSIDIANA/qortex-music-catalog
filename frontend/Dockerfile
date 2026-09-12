@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run lint && npm run test && npm run build
+RUN npm run format:check && npm run lint && npm run test && npm run build
 
 FROM nginx:1.28.3-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf

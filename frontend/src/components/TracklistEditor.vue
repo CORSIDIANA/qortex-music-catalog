@@ -30,6 +30,7 @@ watch(
   () => props.album,
   (album) => {
     tracks.value = [...album.tracks]
+    stale.value = false
   },
   { immediate: true },
 )
@@ -64,12 +65,11 @@ function endDrag() {
 }
 function confirmRemove(track: Track) {
   removing.value = track
-  error.value = ''
+  if (!stale.value) error.value = ''
 }
 function cancel() {
   tracks.value = [...props.album.tracks]
-  stale.value = false
-  error.value = ''
+  if (!stale.value) error.value = ''
   notice.value = 'Draft discarded.'
 }
 async function save() {

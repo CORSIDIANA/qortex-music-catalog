@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { api, messageOf } from '../api'
 import type { AlbumDetail } from '../types'
 import RecordCover from '../components/RecordCover.vue'
@@ -52,9 +52,11 @@ async function remove() {
     saving.value = false
   }
 }
-onBeforeRouteLeave(
-  () => !dirty.value || window.confirm('You have an unsaved track order. Discard it and leave?'),
-)
+function confirmDiscard() {
+  return !dirty.value || window.confirm('You have an unsaved track order. Discard it and leave?')
+}
+onBeforeRouteLeave(confirmDiscard)
+onBeforeRouteUpdate(confirmDiscard)
 function beforeUnload(event: BeforeUnloadEvent) {
   if (dirty.value) {
     event.preventDefault()

@@ -3,6 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { api, ApiError } from '../api'
 import type { AlbumDetail } from '../types'
+import AddSongPanel from './AddSongPanel.vue'
 import TracklistEditor from './TracklistEditor.vue'
 
 vi.mock('../api', async (importOriginal) => ({
@@ -81,6 +82,34 @@ describe('tracklist mutation recovery', () => {
     wrapper.unmount()
   })
 
+  it('keeps the reload action when cancelling a draft after a revision conflict', async () => {
+    const wrapper = editor()
+    try {
+      await wrapper.get('[aria-label="Move First song down"]').trigger('click')
+      request.mockRejectedValueOnce(new ApiError(409, 'Stale revision.'))
+      await wrapper
+        .findAll('button')
+        .find((button) => button.text() === 'Save order')!
+        .trigger('click')
+      await flushPromises()
+      await wrapper
+        .findAll('button')
+        .find((button) => button.text() === 'Cancel')!
+        .trigger('click')
+      expect(wrapper.text()).not.toContain('Unsaved order')
+      expect(wrapper.text()).toContain('Reload latest')
+      await wrapper.get('[aria-label="Move First song down"]').trigger('click')
+      expect(
+        wrapper
+          .findAll('button')
+          .find((button) => button.text() === 'Save order')!
+          .attributes('disabled'),
+      ).toBeDefined()
+    } finally {
+      wrapper.unmount()
+    }
+  })
+
   it('locks writes after successful DELETE and failed refresh, then recovers by reload', async () => {
     const wrapper = editor()
     await wrapper.get('[aria-label="Remove First song from album"]').trigger('click')
@@ -103,6 +132,50 @@ describe('tracklist mutation recovery', () => {
     expect(wrapper.text()).not.toContain('First song')
     expect(wrapper.text()).toContain('Latest tracklist loaded.')
     wrapper.unmount()
+  })
+
+  it('can save a new draft after a successful add refreshes a conflicted tracklist', async () => {
+    const wrapper = editor()
+    try {
+      await wrapper.get('[aria-label="Move First song down"]').trigger('click')
+      request.mockRejectedValueOnce(new ApiError(409, 'Stale revision.'))
+      await wrapper
+        .findAll('button')
+        .find((button) => button.text() === 'Save order')!
+        .trigger('click')
+      await flushPromises()
+      await wrapper.get('[aria-label="Move First song up"]').trigger('click')
+      expect(wrapper.text()).not.toContain('Unsaved order')
+
+      request.mockResolvedValueOnce({ results: [], next: null })
+      await wrapper
+        .findAll('button')
+        .find((button) => button.text() === '＋ Add song')!
+        .trigger('click')
+      await flushPromises()
+      const refreshed = {
+        ...album,
+        revision: 6,
+        track_count: 4,
+        tracks: [...album.tracks, { id: 14, song: 4, song_title: 'Fourth song', track_number: 4 }],
+      }
+      request.mockResolvedValueOnce(refreshed)
+      wrapper.getComponent(AddSongPanel).vm.$emit('add', { title: 'Fourth song' })
+      await flushPromises()
+      expect(wrapper.emitted('updated')?.at(-1)).toEqual([refreshed])
+      await wrapper.setProps({ album: refreshed })
+      await wrapper.get('[aria-label="Move First song down"]').trigger('click')
+      const save = wrapper.findAll('button').find((button) => button.text() === 'Save order')!
+      expect(save.attributes('disabled')).toBeUndefined()
+      request.mockResolvedValueOnce({ ...refreshed, revision: 7 })
+      await save.trigger('click')
+      expect(request).toHaveBeenLastCalledWith('albums/1/tracks/reorder/', {
+        method: 'PUT',
+        body: JSON.stringify({ track_ids: [12, 11, 13, 14], revision: 6 }),
+      })
+    } finally {
+      wrapper.unmount()
+    }
   })
 
   it('can normalize a single gapped track without an artificial reorder', async () => {

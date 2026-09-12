@@ -16,6 +16,8 @@ part of the acceptance evidence. A named Docker volume preserves data through co
 Vue talks to Django REST Framework through the same origin. The frontend proxy avoids permissive
 CORS settings. DRF serializers own input validation; PostgreSQL remains the final guard for invariants.
 The application uses Django models directly instead of adding repository abstractions.
+Metadata updates affect existing rows only, so a late edit cannot recreate an item deleted in another session.
+Ordinary metadata edits use last-write-wins; revision checks protect tracklist changes.
 
 ## D004 — Adapt generic infrastructure patterns
 
