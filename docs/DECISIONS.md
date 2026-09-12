@@ -31,6 +31,15 @@ The editor sends the complete order with the revision it loaded. The API locks t
 revision and saves the order atomically. Keyboard controls provide the same operation as dragging.
 Explicit placements may have gaps; saving a reordered list normalizes positions to 1…N.
 
+## D006 — Frontend dependencies follow demonstrated state needs
+
+Vue 3's Composition API keeps server snapshots in their route pages and the unsaved track order inside
+the editor that owns it. Components communicate through typed props and events; the API returns the new
+snapshot after every successful mutation. There is no shared draft across routes, so a Pinia store would
+add cache lifetime and reset rules without removing existing state. Quasar and Tailwind were also considered,
+but the current focused stylesheet already provides the required responsive, accessible interface.
+They should be introduced when a larger component system or shared client state creates a concrete need.
+
 ## Scope trade-offs
 
 The demo API is intentionally unauthenticated and exposed on loopback only. Authentication and public

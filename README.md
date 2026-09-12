@@ -22,6 +22,11 @@ Artist  →  Album  →  AlbumTrack  →  Song
                       └── track_number
 ```
 
+The frontend uses Vue 3's Composition API with TypeScript and a focused project stylesheet. Pinia was
+considered, but the only mutable draft belongs to one album editor; persisted state and concurrency
+revisions come from the API. Quasar and Tailwind would replace a small, tested UI layer without solving
+an unmet requirement, so they are deliberately not dependencies of this assignment.
+
 `AlbumTrack` is an explicit through model: a track number describes a song's placement on an album.
 It is not a property of the song. Database constraints prevent duplicate positions and duplicate song
 placements within an album. Song titles are deliberately not unique.
@@ -120,7 +125,7 @@ See [SPEC](docs/SPEC.md) for the full behavior contract.
 
 - PostgreSQL enforces the important domain rules and is also the test database.
 - Parent-album locking plus revision checks prevents stale tracklist saves; reorder preserves song identities.
-- Vue keeps a local edit draft. This app does not need a global Pinia store.
+- Vue keeps one local album-edit draft; the API remains the persisted source of truth.
 - Same-origin requests keep the setup small and avoid broad CORS permissions.
 - The demo API intentionally has no authentication. Public deployment, streaming and third-party integrations are out of scope.
 
