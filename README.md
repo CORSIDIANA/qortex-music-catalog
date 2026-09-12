@@ -26,6 +26,10 @@ Artist  →  Album  →  AlbumTrack  →  Song
 It is not a property of the song. Database constraints prevent duplicate positions and duplicate song
 placements within an album. Song titles are deliberately not unique.
 
+In this assignment, a **track** is a catalog placement: a Song on an Album at a numbered position.
+Songs have titles only; no audio file or streaming URL is stored, so playback is intentionally outside
+the interface. The required product is the catalog and tracklist editor described in the [SPEC](docs/SPEC.md).
+
 ## Quick start
 
 Install Docker with Compose v2. From the cloned repository:

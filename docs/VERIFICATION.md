@@ -6,6 +6,10 @@ These are local execution results, not a claim of external human review or publi
 Implementation commit: `ad19096de8df30a919995dd9e21b3cd91579d8a0`.
 The subsequent evidence commit changes documentation and receipts only.
 
+The public GitHub Actions workflow also completed successfully for repository HEAD
+`ebfdeac53dbcde1110f588cc35a7f9ba5ad0e55b` on 2026-09-12: [Verify catalog run #1](https://github.com/CORSIDIANA/qortex-music-catalog/actions/runs/34686744045).
+That hosted receipt verifies the published assignment workflow; it is not a deployment or a human review.
+
 ## Fresh-archive acceptance
 
 A Git source archive was extracted into an empty directory and built with
@@ -112,6 +116,5 @@ All confirmed findings were addressed before acceptance. The review is not a hum
 
 The demo API has no authentication and is intended for loopback development. Django Admin requires a
 staff account created by the reviewer. Browser acceptance covers Chromium; other browser engines are
-not claimed. Hosted GitHub Actions execution is not claimed until this repository is pushed and CI runs.
-No external services, music providers or proprietary project modules are included.
+not claimed. No external services, music providers or proprietary project modules are included.
 Revision conflict protection covers tracklists; ordinary metadata updates remain last-write-wins.
