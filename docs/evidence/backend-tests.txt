@@ -5,12 +5,13 @@ rootdir: /app
 configfile: pyproject.toml
 testpaths: tests
 plugins: django-4.14.0
-collected 87 items
+collected 96 items
 
-tests/test_api.py ...................................................... [ 62%]
-................                                                         [ 80%]
-tests/test_models.py ............                                        [ 94%]
-tests/test_seed.py ..                                                    [ 96%]
-tests/test_concurrency.py ...                                            [100%]
+tests/test_api.py ...................................................... [ 56%]
+................                                                         [ 72%]
+tests/test_models.py ............                                        [ 85%]
+tests/test_seed.py ..                                                    [ 87%]
+tests/test_concurrency.py ...                                            [ 90%]
+tests/test_update_races.py .........                                     [100%]
 
-============================== 87 passed in 5.50s ==============================
+============================= 96 passed in 11.45s ==============================

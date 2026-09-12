@@ -1,21 +1,72 @@
 {
-  "implementation_commit": "0e604d434690a159fc0ce8370b881d8ffaac733c",
-  "executed_at": "2026-09-12T08:57:03.974427+00:00",
+  "implementation_commit": "ad19096de8df30a919995dd9e21b3cd91579d8a0",
+  "executed_at": "2026-09-12T09:17:17.441569+00:00",
   "environment": "Windows host; Docker Desktop Linux containers; PostgreSQL 17.11",
-  "fresh_clone": true,
+  "fresh_extracted_git_archive": true,
   "fresh_database_volume": true,
-  "compose_project": "qortex-review-cold",
+  "compose_project": "qortex-astra-cold-ad19096",
   "commands": [
     {
-      "command": "docker compose build --no-cache",
+      "name": "build-no-cache",
+      "command": [
+        "docker",
+        "compose",
+        "build",
+        "--no-cache"
+      ],
       "exit_code": 0
     },
     {
-      "command": "python scripts/verify.py http://127.0.0.1:5174",
+      "name": "complete-gate",
+      "command": [
+        "python",
+        "scripts/verify.py",
+        "http://127.0.0.1:5175"
+      ],
       "exit_code": 0
     },
     {
-      "command": "python scripts/browser_smoke.py http://127.0.0.1:5174",
+      "name": "browser",
+      "command": [
+        "python",
+        "scripts/browser_smoke.py",
+        "http://127.0.0.1:5175"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "pip-check",
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "-T",
+        "backend",
+        "python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "healthy-services",
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "stop-isolated-stack",
+      "command": [
+        "docker",
+        "compose",
+        "down"
+      ],
       "exit_code": 0
     }
   ],
@@ -120,10 +171,10 @@
       "command": [
         "python",
         "scripts/smoke.py",
-        "http://127.0.0.1:5174"
+        "http://127.0.0.1:5175"
       ],
       "exit_code": 0
     }
   ],
-  "note": "The local Python executable path is displayed as python. No hosted CI run is claimed."
+  "normalization": "Host-specific Python executable paths are represented as python; command arguments and exit codes are unchanged."
 }
